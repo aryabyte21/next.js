@@ -47,6 +47,16 @@ describe('Script component with beforeInteractive strategy CSS class rendering',
     expect(scriptInHead).toBe(true)
   })
 
+  it('should ship the inline script body once', async () => {
+    const $ = await next.render$('/')
+    const flight = $('script')
+      .filter((_, el) => $(el).html().includes('self.__next_f.push'))
+      .text()
+
+    expect($.html().match(/beforeInteractiveExecuted/g)).toHaveLength(1)
+    expect(flight).not.toContain('beforeInteractiveExecuted')
+  })
+
   it('should render multiple beforeInteractive scripts with correct class attributes', async () => {
     const browser = await next.browser('/multiple')
 
